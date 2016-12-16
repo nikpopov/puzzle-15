@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Puzzle 15</title>
+	<script type="text/javascript">
+		function play() {
+			var field = document.getElementById('game');
+			var array = [];
+
+			for (var i=0; i<16; i++) {
+				do {
+					var rand = Math.floor(Math.random() * 16) + 1;
+				} while(array.includes(rand));
+				array.push(rand);
+				var el = document.createElement('input');
+				el.setAttribute('type', 'button');
+				el.style.cssText = 'width: 100px; height: 100px; border: 2px solid black; border-radius: 5px; display: inline-block; font-size: 4em; textAlign: center; margin: 5px; background: rgb(233, 239, 10); background: radial-gradient(circle, rgb(205, 247, 89), rgb(206, 196, 14))'
+				if(array[i] === 16) {
+					el.setAttribute('value', " ");
+					el.style.visibility = 'hidden'
+				} else {
+					el.setAttribute('value', array[i]);
+				}
+				field.appendChild(el);
+				el.addEventListener("click", function() {
+					makeOver(event);
+				});
+				if((i + 1) % 4 === 0) {
+					field.appendChild(document.createElement('br'));
+				}
+			}
+		};
+
+		function makeOver(e) {
+			var col = document.getElementsByTagName('input');
+			var total;
+			for(var i=0; i<col.length; i++) {
+				if(col[i].value === e.target.value) {
+					if((i-4) >= 0 && (col[i-4].value === " ")) {
+						col[i-4].value = e.target.value;
+						col[i-4].style.visibility = "visible";
+						col[i].value = " ";
+						col[i].style.visibility = 'hidden';
+						total = counter();
+					}
+					if((i+4) < 16 && (col[i+4].value === " ")) {
+						col[i+4].value = e.target.value;
+						col[i+4].style.visibility = "visible";
+						col[i].value = " ";
+						col[i].style.visibility = 'hidden';
+						total = counter();
+					}
+					if((i+1)%4 !== 0 && (col[i+1].value === " ")) {
+						col[i+1].value = e.target.value;
+						col[i+1].style.visibility = "visible";
+						col[i].value = " ";
+						col[i].style.visibility = 'hidden';
+						total = counter();
+					}
+					if((i-1)%4 >= 0 && col[i-1].value === " ") {
+						col[i-1].value = e.target.value;
+						col[i-1].style.visibility = "visible";
+						col[i].value = " ";
+						col[i].style.visibility = 'hidden';
+						total = counter();
+					} else {
+
+					}
+				}
+			}
+			var element = document.getElementById('score');
+			if(total) {
+				element.innerHTML = "SCORE: " + total;
+			} else {
+				element.innerHTML = "Wrong!"
+			}
+			
+			for(var i=0; i<(col.length-1); i++) {
+				if(col[i].value === (i+1).toString()) {
+					document.getElementById('score').innerHTML = "YOU WIN!";
+					window.localStorage.setItem('winner', total)
+				}
+			}
+		};
+
+		var counter = (function() {
+			var score = 1;
+			return function() {
+				return score++
+			}
+		})();
+	</script>
+</head>
+<body onLoad='play()' style="text-align: center">
+	<div id=game style="display: inline-block; margin: 0 auto; border-style: double; border-radius: 8px; background: rgb(172, 234, 239); margin-top: 75px"></div>
+	<br>
+	<div id='score' style="display: inline-block; width: 300px; height: 60px; border: 1px solid black; border-radius: 10px; margin-top: 25px; font-size: 3em;"></div>
+	<br>
+	<button style="display: inline-block; width: 200px; height: 60px; font-size: 2em; margin-top: 50px; border-radius: 10px" onclick='location.reload()'>New Game</button>
+</body>
+</html>
